@@ -1,25 +1,51 @@
-Deploy Django and React APP in a production VPS (Django + React + PostgreSQL + NGINX + Ubuntu Server)
+# Deploy Django and React App in Production Environment
 
-Assuming You have backend and frontend codes in /home/backend and /home/frontend/ (Use git to upload)
+This guide walks you through deploying a Django and React application on a production VPS with Ubuntu Server. The setup uses PostgreSQL as the database, NGINX as the reverse proxy, and assumes the following directory structure:
 
-1. **Install required Packages from the Ubuntu Repositories**
-    ```bash
-    sudo apt-get update
-    sudo apt-get install python3-pip python3-dev libpq-dev postgresql postgresql-contrib nginx
+- **Backend Code**: `/home/backend/`
+- **Frontend Code**: `/home/frontend/`
 
-2. **Setup Backend**
-We'll setup backend first. Go to your backend folder
-    ```bash
-    cd /home/backend/
+## Prerequisites
 
-3. **Create PostgreSQL Database and User**
-Enter postgres environment
-    ```bash
-    sudo -u postgres psql
+1. A VPS with Ubuntu Server installed.
+2. Git installed for uploading your code.
 
-Create database and user with password and assign that user to that database. Change the db_name, db_user_name and db_user_password with yours.
-    ```bash
-    CREATE DATABASE db_name;
-    CREATE USER db_user_name WITH PASSWORD 'db_user_password';
-    GRANT ALL PRIVILEGES ON DATABASE db_name TO db_user_name;
-    \q
+---
+
+## Steps to Deploy
+
+### 1. Install Required Packages
+
+Update the Ubuntu package index and install necessary dependencies:
+
+```bash
+sudo apt-get update
+sudo apt-get install python3-pip python3-dev libpq-dev postgresql postgresql-contrib nginx
+```
+
+### 2. Setup the Backend
+
+Navigate to your backend folder:
+
+```bash
+cd /home/backend/
+```
+
+---
+
+### 3. Create PostgreSQL Database and User
+
+1. Enter the PostgreSQL environment:
+
+   ```bash
+   sudo -u postgres psql
+   ```
+
+2. Create a database and user with a password, and assign the user to the database. Replace `db_name`, `db_user_name`, and `db_user_password` with your custom values:
+
+   ```sql
+   CREATE DATABASE db_name;
+   CREATE USER db_user_name WITH PASSWORD 'db_user_password';
+   GRANT ALL PRIVILEGES ON DATABASE db_name TO db_user_name;
+   \q
+   
