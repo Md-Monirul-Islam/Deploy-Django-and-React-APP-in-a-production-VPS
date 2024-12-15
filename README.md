@@ -49,3 +49,11 @@ cd /home/backend/
    GRANT ALL PRIVILEGES ON DATABASE db_name TO db_user_name;
    \q
    
+## 4. Create a Python Virtual Environment
+    ```bash
+    sudo -H pip3 install --upgrade pip
+    sudo -H pip3 install virtualenv
+    ```
+    ```bash
+    virtualenv venv
+    ```
