@@ -48,7 +48,8 @@ cd /home/backend/
    CREATE USER db_user_name WITH PASSWORD 'db_user_password';
    GRANT ALL PRIVILEGES ON DATABASE db_name TO db_user_name;
    \q
-   
+   ```
+
 ---
 
 ### 4. Create a Python Virtual Environment
@@ -65,7 +66,6 @@ Create a virtual environment named `venv`:
 ```bash
 virtualenv venv
 ```
----
 
 Activate the virtual environment:
 
@@ -85,22 +85,6 @@ For GCP VMs, using `pip` without `sudo` might cause permission errors. In such c
 sudo /home/backend/venv/bin/python -m pip install -r requirements.txt
 ```
 
-Install gunicorn and psycopg2 (for postgresql) additionally
-    ```bash
-    pip install gunicorn psycopg2
-    ```
-You should now have everything you need to deploy your django backend.
-
-Migrate your database migrations
-
-    ```bash
-    python manage.py migrate
-    ```
-
-Now try if you're able to start the project.
-    ```bash
-    python manage.py runserver
-    ```
 ---
 
 ### 5. Install Additional Dependencies
