@@ -116,3 +116,35 @@ Verify that the project starts successfully:
 ```bash
 python manage.py runserver
 ```
+
+If you encounter any module not found errors or other issues, resolve them before moving to the next step.
+
+Create an exception for port 8000:
+
+```bash
+sudo ufw allow 8000
+```
+
+Test your project by starting the Django development server:
+
+```bash
+python manage.py runserver 0.0.0.0:8000
+```
+
+In your web browser, visit your server’s domain name or IP address followed by `:8000`:
+
+```text
+http://server_domain_or_IP:8000
+```
+
+If your project is running successfully, proceed to the next step. Otherwise, debug any issues before continuing.
+
+---
+
+### 8. Test Gunicorn’s Ability to Serve the Project
+
+Replace `project_name` with your project folder name (where your `urls.py` and `wsgi.py` files exist):
+
+```bash
+gunicorn --bind 0.0.0.0:8000 project_name.wsgi
+```
