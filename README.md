@@ -84,3 +84,51 @@ For GCP VMs, using `pip` without `sudo` might cause permission errors. In such c
 ```bash
 sudo /home/backend/venv/bin/python -m pip install -r requirements.txt
 ```
+
+Install gunicorn and psycopg2 (for postgresql) additionally
+    ```bash
+    pip install gunicorn psycopg2
+    ```
+You should now have everything you need to deploy your django backend.
+
+Migrate your database migrations
+
+    ```bash
+    python manage.py migrate
+    ```
+
+Now try if you're able to start the project.
+    ```bash
+    python manage.py runserver
+    ```
+---
+
+### 5. Install Additional Dependencies
+
+Install Gunicorn (a Python WSGI HTTP Server) and `psycopg2` (PostgreSQL adapter for Python):
+
+```bash
+pip install gunicorn psycopg2
+```
+
+You should now have everything you need to deploy your Django backend.
+
+---
+
+### 6. Migrate Your Database
+
+Apply your database migrations:
+
+```bash
+python manage.py migrate
+```
+
+---
+
+### 7. Test Your Backend
+
+Verify that the project starts successfully:
+
+```bash
+python manage.py runserver
+```
