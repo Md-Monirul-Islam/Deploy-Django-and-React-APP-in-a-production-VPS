@@ -148,3 +148,28 @@ Replace `project_name` with your project folder name (where your `urls.py` and `
 ```bash
 gunicorn --bind 0.0.0.0:8000 project_name.wsgi
 ```
+
+
+This will start Gunicorn on the same interface that the Django development server was running on. You can go back and test the app again.
+
+**Note:** The admin interface will not have any of the styling applied since Gunicorn does not know about the static CSS content responsible for this.
+
+If everything so far has gone well, deactivate the virtual environment:
+
+```bash
+deactivate
+```
+
+The virtual environment indicator in your terminal will be removed.
+
+---
+
+### 9. Create a Gunicorn systemd Service File
+
+We have tested that Gunicorn can interact with our Django application, but we should implement a more robust way of starting and stopping the application server. To accomplish this, we’ll make a systemd service file.
+
+Create and open a systemd service file for Gunicorn with sudo privileges:
+
+```bash
+sudo nano /etc/systemd/system/gunicorn.service
+```
