@@ -65,3 +65,22 @@ Create a virtual environment named `venv`:
 ```bash
 virtualenv venv
 ```
+---
+
+Activate the virtual environment:
+
+```bash
+source venv/bin/activate
+```
+
+Use `pip freeze > requirements.txt` in your local development environment to export all required package names with their versions. Then, install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+For GCP VMs, using `pip` without `sudo` might cause permission errors. In such cases, run the following command:
+
+```bash
+sudo /home/backend/venv/bin/python -m pip install -r requirements.txt
+```
