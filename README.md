@@ -331,3 +331,30 @@ Finally, we need to open up our firewall to normal traffic on port 80. Since we 
    sudo ufw allow 'Nginx Full'
    ```
 And our backend is ready
+
+---
+
+### 13. Setup Frontend
+Move to your frontend folder
+   ```bash
+   cd /home/frontend
+   ```
+Install nodejs and npm
+   ```bash
+   sudo apt-get install nodejs npm
+   ```
+
+Install required libraries.
+   ```bash
+   sudo npm install
+   ```
+Build the project
+   ```bash
+   sudo npm run build
+   ```
+
+Restart nginx service
+   ```bash
+   sudo service nginx restart
+   ```
+You should now be able to go to your server’s domain or IP address to view your application.
