@@ -312,3 +312,22 @@ server {
 Change `server_name` value with your domain or IP address.
 
 **Note:** Look at that root, we defined `/home/frontend/build` where our frontend codes will be available.
+
+
+
+Test your Nginx configuration for syntax errors by typing:
+   ```bash
+   sudo nginx -t
+   ```
+If no errors are reported, go ahead and restart Nginx by typing:
+   ```bash
+   sudo systemctl restart nginx
+   ```
+
+Finally, we need to open up our firewall to normal traffic on port 80. Since we no longer need access to the development server, we can remove the rule to open port 8000 as well:
+
+   ```bash
+   sudo ufw delete allow 8000
+   sudo ufw allow 'Nginx Full'
+   ```
+And our backend is ready
