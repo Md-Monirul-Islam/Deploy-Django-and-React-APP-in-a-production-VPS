@@ -173,3 +173,23 @@ Create and open a systemd service file for Gunicorn with sudo privileges:
 ```bash
 sudo nano /etc/systemd/system/gunicorn.service
 ```
+
+Paste the following code in the editor. Replace `root` with your username and `project_name` with your project folder name:
+
+```ini
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/backend
+ExecStart=/home/backend/venv/bin/gunicorn \
+  --env DJANGO_SETTINGS_MODULE=project_name.settings \
+  --access-logfile /home/backend/logs/gunicorn.log \
+  --workers 3 --bind 127.0.0.1:8000 project_name.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+```
