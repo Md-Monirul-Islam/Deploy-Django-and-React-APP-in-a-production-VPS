@@ -279,3 +279,36 @@ Now open that default server definition file:
 sudo nano /etc/nginx/sites-available/default
 ```
 
+
+Paste the following block of code:
+
+```bash
+server {
+    root /home/frontend/build;
+    index index.htm index.html index.nginx-debian.html;
+    server_name 1**.**.**.*9;
+
+    location / {
+        try_files $uri $uri/ /index.html =404;
+    }
+
+    location ~ ^/api {
+        proxy_pass http://localhost:8000;
+        proxy_set_header HOST $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name 1**.**.**.*9;
+    return 404;
+}
+```
+
+Change `server_name` value with your domain or IP address.
+
+**Note:** Look at that root, we defined `/home/frontend/build` where our frontend codes will be available.
