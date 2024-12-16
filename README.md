@@ -395,7 +395,7 @@ By previous settings you won't be able to access django-admin. If you want to ac
         log_not_found off;
     }
     
-    location /django-static {
+    location /static {
         autoindex on;
         alias /home/backend/staticfiles;
     }
@@ -433,3 +433,28 @@ Now you should access your django admin area along with styling (CSS & JS).
    ```bash
    http://server_domain_or_IP/admin
    ```
+### Bonus
+As you update your configuration or application, you will likely need to restart the processes to adjust to your changes.
+If you update your Django application, you can restart the Gunicorn process to pick up the changes by typing:
+
+   ```bash
+   sudo systemctl restart gunicorn
+   ```
+
+If you change gunicorn systemd service file, reload the daemon and restart the process by typing:
+
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl restart gunicorn
+   ```
+
+If you change the Nginx server block configuration, test the configuration and then restart Nginx by typing:
+
+   ```bash
+   sudo nginx -t && sudo systemctl restart nginx
+   ```
+
+These commands are helpful for picking up changes as you adjust your configuration.
+
+
+**Note:** Comment bellow if you face any error while deploying your application, I'll try to reply. Don't forget to put down your application url in comment box after you successfully deloyed it.
