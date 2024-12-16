@@ -215,7 +215,7 @@ Check the status of the Gunicorn service to verify that it started successfully:
 sudo systemctl status gunicorn
 ```
 
-If the service started correctly, the output will indicate that the service is active and running. Next, check the contents of your backend directory to ensure that the socket file is present:
+If the service started correctly, the output will indicate that the service is active and running. Next, check the contents of your backend directory to ensure that the socket file is present (backend.sock):
 
 ```bash
 ls /home/backend
@@ -226,3 +226,21 @@ If you encounter any issues, or if the socket file is missing, inspect the Gunic
 ```bash
 sudo journalctl -u gunicorn
 ```
+
+Take a look at the messages in the logs to find out where Gunicorn ran into problems. There are many reasons that you may have run into problems, but often, if Gunicorn was unable to create the socket file, it is for one of these reasons:
+
+1. The project files are owned by the root user instead of a sudo user.
+2. The `WorkingDirectory` path within the `/etc/systemd/system/gunicorn.service` file does not point to the project directory.
+3. The configuration options given to the Gunicorn process in the `ExecStart` directive are not correct. Check the following items:
+   - The path to the Gunicorn binary points to the actual location of the binary within the virtual environment.
+   - The `--bind` directive defines a file to create within a directory that Gunicorn can access.
+   - The `project_name.wsgi:application` is an accurate path to the WSGI callable.
+
+If you make changes to the `/etc/systemd/system/gunicorn.service` file, reload the daemon to re-read the service definition and restart the Gunicorn process by typing:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+```
+
+Make sure you troubleshoot any of the above issues before continuing.
