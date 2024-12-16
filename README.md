@@ -963,4 +963,4 @@ If there are no errors, run the following command to restart NGINX server.
 sudo service nginx restart
 ```
 
-# Congratualtions! You are successfully deploy your Django and React.js project of VPS Server for production  with free ssl certificate.
+### Congratulations! You have successfully deployed your Django and React.js project on your VPS server for production, complete with a free SSL certificate.
