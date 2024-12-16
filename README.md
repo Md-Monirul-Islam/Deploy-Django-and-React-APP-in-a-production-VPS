@@ -244,3 +244,38 @@ sudo systemctl restart gunicorn
 ```
 
 Make sure you troubleshoot any of the above issues before continuing.
+
+---
+
+### 12. Configure NGINX for Reverse Proxy to Gunicorn
+
+Check existing enabled sites by:
+
+```bash
+ls /etc/nginx/sites-enabled/
+```
+
+You'll see a file called `default`. If there are any other files, remove them:
+
+```bash
+sudo rm /etc/nginx/sites-enabled/filename
+```
+
+Check available servers:
+
+```bash
+ls /etc/nginx/sites-available/
+```
+
+You'll see a file called `default`. If there are any other files, remove them as well. Backup the default server file:
+
+```bash
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+```
+
+Now open that default server definition file:
+
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
+
