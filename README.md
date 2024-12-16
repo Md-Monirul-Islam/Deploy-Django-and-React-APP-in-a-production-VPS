@@ -919,3 +919,48 @@ server {
 sudo nginx -t && sudo systemctl restart nginx
 ```
 Now check your domain, you should see ssl in your domain.
+
+
+### 17. Hide NGINX Server Version from Header
+Generally, when a user requests an unavailable/broken link on an NGINX based website, then they get the following message.
+
+```bash
+404 Page not found
+nginx/1.6.2
+```
+As you can see, the NGINX server string contains server name and version. Attackers can use this information to hack your website.
+So it is important to hide NGINX server information from response.
+Here are the steps to hide NGINX server name and version from response.
+
+## Open NGINX configuration file
+Open terminal and run the following command to open NGINX configuration file in a text editor.
+
+```bash
+sudo nano /etc/nginx/nginx.conf
+``` 
+
+## Hide NGINX Server Version & Name
+The NGINX server information can be hidden using `server_tokens` header. Add the following line to http block.
+
+```bash
+http{
+    ...
+    server_tokens off;
+    ...
+}
+```
+
+## Restart NGINX
+Finally, run the following command to check syntax of your updated config file.
+
+```bash
+sudo nginx -t
+```
+ 
+If there are no errors, run the following command to restart NGINX server.
+
+```bash
+sudo service nginx restart
+```
+
+# Congratualtions! You are successfully deploy your Django and React.js project of VPS Server for production  with free ssl certificate.
