@@ -193,3 +193,36 @@ ExecStart=/home/backend/venv/bin/gunicorn \
 [Install]
 WantedBy=multi-user.target
 ```
+
+Now press `Ctrl + X` to exit the editor, type `Y` to confirm changes, and press `Enter` to save.
+
+---
+
+### 10. Start and Enable Gunicorn Service
+
+Start the Gunicorn service that we created and enable it to start at boot:
+
+```bash
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+```
+
+### 11. Check Gunicorn Status and Logs
+
+Check the status of the Gunicorn service to verify that it started successfully:
+
+```bash
+sudo systemctl status gunicorn
+```
+
+If the service started correctly, the output will indicate that the service is active and running. Next, check the contents of your backend directory to ensure that the socket file is present:
+
+```bash
+ls /home/backend
+```
+
+If you encounter any issues, or if the socket file is missing, inspect the Gunicorn process logs:
+
+```bash
+sudo journalctl -u gunicorn
+```
