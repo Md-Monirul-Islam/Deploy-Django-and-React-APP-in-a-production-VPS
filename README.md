@@ -758,3 +758,164 @@ You will need to restart the worker everytime you change something
 sudo supervisorctl restart celery
 sudo supervisorctl restart celery_beat
 ```
+
+### 16. Install Certbot
+
+Let’s Encrypt provides free SSLs for your websites to use secure (SSL) connections. Certbot is free open source software that allows you to easily create Let’s Encrypt SSLs on your cloud server hosting.
+
+Below we’ll cover how to install Certbot, create a Let’s Encrypt SSL certificate, and check maintenance settings.
+
+> You must have a fully qualified domain name (FQDN) configured before creating an SSL.
+
+## Install Certbot
+
+> We recommend you add Certbot developer’s official repository as it’s kept up to date better than what’s in Ubuntu’s default repo.
+
+Install Certbot and additional required packages:
+```bash
+snap install certbot --classic
+```
+
+## Create an SSL with Certbot
+After you install Certbot, you’re ready to create SSL certificates for your domains.
+
+Create an SSL certificate for your domain(s):
+```bash
+sudo certbot --nginx -d domain.com
+```
+Or if you wish to create an SSL that includes “www” queries:
+```bash
+sudo certbot --nginx -d domain.com -d www.domain.com
+```
+* Enter an email address for renewal and security notices
+* Agree to the Terms of Service
+* Specify whether to receive emails from EFF
+* Choose whether to redirect HTTP traffic to HTTPS
+    1. no redirect, no further changes to the server
+    2. redirect all requests to HTTPS
+
+The certificate files for each domain will be added to a respective directory in:
+```bash
+cd /etc/letsencrypt/live
+```
+
+> Let’s Encrypt certificates expire after 90 days.
+
+To prevent SSLs from expiring, `certbot renew` checks your SSL status twice a day and renews certificates expiring within thirty days.
+
+To view settings on systemd:
+```bash
+systemctl show certbot.timer
+```
+
+To view settings on non-systemd systems:
+```bash
+cat /etc/cron.d/certbot
+```
+
+To test the renewal process to ensure it works:
+```bash
+sudo certbot renew --dry-run
+```
+
+## Configure Nginx Settings
+
+Open your server config file.
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
+
+Edit it as bellow:
+```bash
+# Nginx Configuration for Gunicorn Backend and Frontend
+server {
+    server_name your_domain.com www.your_domain.com;  # Your public IP address or domain name
+
+    # Serve frontend files
+    #root /root/home/frontend/dist;  # Adjust the path to your frontend build directory
+    #root /var/www/frontend;
+    root /var/www/frontend/frontend/dist;
+    index index.html;
+
+    # Serve frontend files for client requests
+    location / {
+        try_files $uri $uri/ /index.html =404;
+    }
+
+    # Reverse proxy for /api to Gunicorn
+    location ~ ^/api {
+        proxy_pass http://localhost:8000;  # Gunicorn address
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    # Reverse proxy for /admin to access the Django admin panel
+    location ~ ^/admin {
+        proxy_pass http://localhost:8000;  # Gunicorn address
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    # Serve Django static files
+    location /static/ {
+        autoindex on;
+        #alias /var/www/rcn_back_end/staticfiles/;  # Path to Django static files
+        alias /root/home/backend/staticfiles/;
+    }
+
+    # Serve Django media files
+    location /media {
+        autoindex on;
+        alias /root/home/backend/media;  # Path to Django media files
+    }
+
+    # Handle favicon.ico
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/your_domain.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/your_domain.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+# Default server with 404 response for unmatched requests
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+   # server_name _;  # Catch-all for any unmatched requests
+    return 404;  # Returns a 404 for unmatched requests
+}
+
+server {
+    if ($host = www.domain.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = domain.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name domain.com www.domain.com;
+    return 404; # managed by Certbot
+}
+```
+
+> Don't forget to change `your_domain.com` with your domain name.
+
+## Reload nginx
+```bash
+sudo nginx -t && sudo systemctl restart nginx
+```
+Now check your domain, you should see ssl in your domain.
