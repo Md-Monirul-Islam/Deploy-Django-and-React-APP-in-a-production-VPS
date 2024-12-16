@@ -358,3 +358,78 @@ Restart nginx service
    sudo service nginx restart
    ```
 You should now be able to go to your server’s domain or IP address to view your application.
+
+---
+
+### 14. BONUS: Access Django Admin Area
+By previous settings you won't be able to access django-admin. If you want to access it, along with styling (Gunicorn will not load any styling), change your nginx configuration file as bellow.
+
+   ```bash
+   server {
+    root /home/frontend/build;
+    index index.htm index.html index.nginx-debian.html;
+    server_name 1**.**.**.*9;
+
+    location / {
+        try_files $uri $uri/ /index.html =404;
+    }
+
+    location ~ ^/api {
+        proxy_pass http://localhost:8000;
+        proxy_set_header HOST $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    
+    location ~ ^/admin {
+        proxy_pass http://localhost:8000;
+        proxy_set_header HOST $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+    
+    location /django-static {
+        autoindex on;
+        alias /home/backend/staticfiles;
+    }
+
+    location /media {
+        autoindex on;
+        alias /home/backend/media;
+    }
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name 1**.**.**.*9;
+    return 404;
+}
+```
+
+In your django settings file, add this.
+If already exist then no need to configure it.
+
+   ```bash
+   STATIC_URL = "/static/"
+   STATIC_ROOT = "staticfiles"
+   ```
+**Note:** Note: If your django admin lives in other url than default /admin/ change that url here location ~ ^/admin.
+
+Now run this management command to collect all static files to that folder (staticfiles).
+
+   ```bash
+   python manage.py collectstatic
+   ```
+
+Now you should access your django admin area along with styling (CSS & JS).
+   ```bash
+   http://server_domain_or_IP/admin
+   ```
